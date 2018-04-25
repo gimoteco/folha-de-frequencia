@@ -3,11 +3,13 @@ from datetime import datetime
 from datetime import timedelta
 import random
 import argparse
+import csv
 
 hoje = datetime.now()
 parser = argparse.ArgumentParser(description='Gera uma folha de ponto aleatória')
 parser.add_argument('--carga_horaria', required=False, type=int, default=8, help="Carga horaria em horas")
 parser.add_argument('--minutos_de_almoco', required=False, type=int, default=60, help="Minutos de almoço")
+parser.add_argument('--arquivo_de_saida', required=False, type=str, default='folha_de_frequencia.csv', help="Nome do arquivo csv de saída")
 parser.add_argument('--variacao_maxima', required=False, type=int, default=30, help="Variacao máxima em minutos nos horários")
 parser.add_argument('--minimo_de_almoco', required=False, type=int, default=60, help="Mínimo de almoço em minutos")
 parser.add_argument('--hora_de_chegada', required=True, type=str, default="07:30", help="Horário de chegada oficial (ex: 07:00)")
@@ -38,19 +40,29 @@ def obter_anotacoes(chegada_oficial):
 def formatar_hora(data):
     return data.strftime('%H:%M')
 
-tabela = PrettyTable(["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino", "Horas extras", "Assinatura"])
+cabecalho = ["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino", "Horas extras", "Assinatura"]
+tabela = PrettyTable(cabecalho)
 tabela.padding_width = 1
 dia = INICIO_DO_CALENDARIO
 um_dia = timedelta(days=1)
-while dia <= FIM_DO_CALENDARIO:
-    dia_formatado = dia.strftime('%d/%m')
-    anotacoes_do_dia = obter_anotacoes(datetime(dia.year, dia.month, dia.day, HORA_DA_CHEGADA, MINUTO_DA_CHEGADA))
-    if dia.weekday() < 5 or args.preencher_fim_de_semana:
-        tabela.add_row([dia_formatado, formatar_hora(anotacoes_do_dia[0]), formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3]), "" , ""])
-    else:
-        dia_da_semana = DIAS_DA_SEMANA[dia.weekday()]
-        tabela.add_row([dia_formatado] + [dia_da_semana] * 6)
-    dia += um_dia    
 
-lines = tabela.get_string()
-print(lines)
+with open(args.arquivo_de_saida, 'w', newline='') as csvfile:
+    spamwriter = csv.writer(csvfile)
+    spamwriter.writerow(cabecalho)    
+    while dia <= FIM_DO_CALENDARIO:
+        dia_formatado = dia.strftime('%d/%m')
+        anotacoes_do_dia = obter_anotacoes(datetime(dia.year, dia.month, dia.day, HORA_DA_CHEGADA, MINUTO_DA_CHEGADA))
+        linha = []
+        if dia.weekday() < 5 or args.preencher_fim_de_semana:
+            linha = [dia_formatado, formatar_hora(anotacoes_do_dia[0]), formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3]), "" , ""]
+            tabela.add_row(linha)
+            spamwriter.writerow(linha)
+        else:
+            dia_da_semana = DIAS_DA_SEMANA[dia.weekday()]
+            linha = [dia_formatado] + [dia_da_semana] * 6
+            tabela.add_row(linha)
+            spamwriter.writerow(linha)
+        dia += um_dia    
+
+linhas_da_tabela = tabela.get_string()
+print(linhas_da_tabela)
