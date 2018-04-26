@@ -6,12 +6,19 @@ import argparse
 import csv
 from core import GeradorDePonto
 
+def formatar_hora(data):
+    return data.strftime('%H:%M')
+
+def converter_hora_em_texto_para_timedelta(hora):
+    HORAS, MINUTOS = map(lambda parte: int(parte), hora.split(':'))
+    return timedelta(hours=HORAS, minutes=MINUTOS)
+
 hoje = datetime.now()
 parser = argparse.ArgumentParser(description='Gera uma folha de ponto aleatória')
 parser.add_argument('--carga_horaria', required=False, type=str, default="08:00", help="Carga horaria em horas")
 parser.add_argument('--minutos_de_almoco', required=False, type=int, default=60, help="Minutos de almoço")
 parser.add_argument('--arquivo_de_saida', required=False, type=str, default='folha_de_frequencia.csv', help="Nome do arquivo csv de saída")
-parser.add_argument('--variacao_maxima', required=False, type=int, default=30, help="Variacao máxima em minutos nos horários")
+parser.add_argument('--variacao_maxima', required=False, type=str, default="0:30", help="Variacao máxima em minutos nos horários")
 parser.add_argument('--minimo_de_almoco', required=False, type=int, default=60, help="Mínimo de almoço em minutos")
 parser.add_argument('--hora_de_chegada', required=True, type=str, default="07:30", help="Horário de chegada oficial (ex: 07:00)")
 parser.add_argument('--preencher_fim_de_semana', required=False, action='store_true', default=False, help="Bloquear o preenchimento dos finais de semana")
@@ -23,15 +30,12 @@ args = parser.parse_args()
 INICIO_DO_CALENDARIO = datetime.strptime(args.inicio, '%d/%m/%y')
 FIM_DO_CALENDARIO = datetime.strptime(args.fim, '%d/%m/%y')
 HORA_DA_CHEGADA, MINUTO_DA_CHEGADA = map(lambda parte: int(parte), args.hora_de_chegada.split(':'))
-HORAS_DA_CARGA_HORARIA, MINUTOS_DA_CARGA_HORARIA = map(lambda parte: int(parte), args.carga_horaria.split(':'))
-CARGA_HORARIA = timedelta(hours=HORAS_DA_CARGA_HORARIA, minutes=MINUTOS_DA_CARGA_HORARIA)
+CARGA_HORARIA = converter_hora_em_texto_para_timedelta(args.carga_horaria)
+VARIACAO_MAXIMA = converter_hora_em_texto_para_timedelta(args.variacao_maxima)
 DIAS_DA_SEMANA = {5: 'SÁBADO', 6: 'DOMINGO'}
 tempo_da_chegado = time(hour=HORA_DA_CHEGADA, minute=MINUTO_DA_CHEGADA)
-gerador = GeradorDePonto(tempo_da_chegado, CARGA_HORARIA, args.preencher_fim_de_semana, args.minimo_de_almoco, args.variacao_maxima, args.minutos_de_almoco)
+gerador = GeradorDePonto(tempo_da_chegado, CARGA_HORARIA, args.preencher_fim_de_semana, args.minimo_de_almoco, VARIACAO_MAXIMA, args.minutos_de_almoco)
 registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CALENDARIO)
-
-def formatar_hora(data):
-    return data.strftime('%H:%M')
 
 cabecalho = ["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino"]
 tabela = PrettyTable(cabecalho)

@@ -9,7 +9,7 @@ class TestesDoGerador(unittest.TestCase):
     carga_horaria = timedelta(hours=8)
     minimo_de_minutos_de_almoco = 60
     minutos_de_almoco = 120
-    variacao_maxima = 30
+    variacao_maxima = timedelta(minutes=30)
     inicio_do_periodo = datetime(2018, 4, 1)
     fim_do_periodo = datetime(2018, 4, 30)
     eh_fim_de_semana = lambda self, dia: dia[0].weekday() > 4
@@ -54,7 +54,7 @@ class TestesDoGerador(unittest.TestCase):
         assert all(map(lambda registro: calcular_duracao_do_expediente(registro) == carga_horaria, dias_trabalhados))
 
     def test_todos_os_registros_estao_dentro_da_variacao_maxima(self):
-        variacao_maxima = 30
+        variacao_maxima = timedelta(minutes=30)
         horario_de_chegada_oficial = time(hour=7, minute=30)
         gerador = GeradorDePonto(horario_de_chegada_oficial, self.carga_horaria, self.preencher_fim_de_semana, self.minimo_de_minutos_de_almoco, variacao_maxima, self.minutos_de_almoco)
         
@@ -67,7 +67,7 @@ class TestesDoGerador(unittest.TestCase):
     def esta_dentro_da_variacao(dia, horario_oficial_de_chegada, horario_com_variacao, variacao):
         horario_original = datetime(dia.year, dia.month, dia.day, horario_oficial_de_chegada.hour, horario_oficial_de_chegada.minute)
         variacao_realizada = horario_com_variacao - horario_original
-        return abs(variacao_realizada.total_seconds()) <= timedelta(minutes=variacao).total_seconds()
+        return abs(variacao_realizada.total_seconds()) <= variacao.total_seconds()
 
 if __name__ == "__main__":
     unittest.main()

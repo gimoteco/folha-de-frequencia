@@ -39,4 +39,5 @@ class GeradorDePonto:
         return (horario_de_chegada, saida_da_manha, chegada_da_tarde, saida_da_tarde, total)
 
     def obter_variacao_aleatoria_de_tempo(self):
-        return timedelta(minutes=random.randint(0, self.variacao_maxima)) * random.choice([-1, 1])
+        segundos_da_variacao_maxima = self.variacao_maxima.total_seconds()
+        return timedelta(seconds=random.randint(0, segundos_da_variacao_maxima)) * random.choice([-1, 1])
