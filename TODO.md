@@ -1,8 +1,8 @@
-# TODO
+# TO DO
+- Padronizar minutos com timedelta
 - Validar inicio e fim (um após o outro)
-- Melhorar a tipagem da lista de registro (chega de listas)
-- Melhorar encapsulamento dos métodos do gerador
-- Testar interfaces
 - Separar csv, cli
-- Criar interface web
+- Configurar quantidade de periodos
 - Copiar para o clipboard
+- Criar interface web
+- Testar interfaces

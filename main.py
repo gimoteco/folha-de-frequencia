@@ -13,7 +13,6 @@ def converter_hora_em_texto_para_timedelta(hora):
     HORAS, MINUTOS = map(lambda parte: int(parte), hora.split(':'))
     return timedelta(hours=HORAS, minutes=MINUTOS)
 
-hoje = datetime.now()
 parser = argparse.ArgumentParser(description='Gera uma folha de ponto aleatória')
 parser.add_argument('--carga_horaria', required=False, type=str, default="08:00", help="Carga horaria em horas")
 parser.add_argument('--minutos_de_almoco', required=False, type=int, default=60, help="Minutos de almoço")
@@ -33,8 +32,8 @@ HORA_DA_CHEGADA, MINUTO_DA_CHEGADA = map(lambda parte: int(parte), args.hora_de_
 CARGA_HORARIA = converter_hora_em_texto_para_timedelta(args.carga_horaria)
 VARIACAO_MAXIMA = converter_hora_em_texto_para_timedelta(args.variacao_maxima)
 DIAS_DA_SEMANA = {5: 'SÁBADO', 6: 'DOMINGO'}
-tempo_da_chegado = time(hour=HORA_DA_CHEGADA, minute=MINUTO_DA_CHEGADA)
-gerador = GeradorDePonto(tempo_da_chegado, CARGA_HORARIA, args.preencher_fim_de_semana, args.minimo_de_almoco, VARIACAO_MAXIMA, args.minutos_de_almoco)
+hora_da_chegada = time(hour=HORA_DA_CHEGADA, minute=MINUTO_DA_CHEGADA)
+gerador = GeradorDePonto(hora_da_chegada, CARGA_HORARIA, args.preencher_fim_de_semana, args.minimo_de_almoco, VARIACAO_MAXIMA, args.minutos_de_almoco)
 registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CALENDARIO)
 
 cabecalho = ["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino"]
@@ -45,11 +44,11 @@ with open(args.arquivo_de_saida, 'w', newline='') as csvfile:
     spamwriter = csv.writer(csvfile)
     spamwriter.writerow(cabecalho)
     for registro in registros:
-        dia = registro[0]
+        dia = registro.dia
         dia_formatado = dia.strftime('%d/%m')
-        anotacoes_do_dia = registro
+        anotacoes_do_dia = registro.marcacoes
         if dia.weekday() < 5 or args.preencher_fim_de_semana:
-            linha = [dia_formatado, formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3]), formatar_hora(anotacoes_do_dia[4])]
+            linha = [dia_formatado, formatar_hora(anotacoes_do_dia[0]), formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3])]
             tabela.add_row(linha)
             spamwriter.writerow(linha)
         else:
