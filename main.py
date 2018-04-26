@@ -26,7 +26,7 @@ HORA_DA_CHEGADA, MINUTO_DA_CHEGADA = map(lambda parte: int(parte), args.hora_de_
 DIAS_DA_SEMANA = {5: 'SÁBADO', 6: 'DOMINGO'}
 tempo_da_chegado = time(hour=HORA_DA_CHEGADA, minute=MINUTO_DA_CHEGADA)
 gerador = GeradorDePonto(tempo_da_chegado, args.carga_horaria, args.preencher_fim_de_semana, args.minimo_de_almoco, args.variacao_maxima, args.minutos_de_almoco)
-registros = gerador.gerar_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CALENDARIO)
+registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CALENDARIO)
 
 def formatar_hora(data):
     return data.strftime('%H:%M')
@@ -42,7 +42,6 @@ with open(args.arquivo_de_saida, 'w', newline='') as csvfile:
         dia = registro[0]
         dia_formatado = dia.strftime('%d/%m')
         anotacoes_do_dia = registro
-        linha = []
         if dia.weekday() < 5 or args.preencher_fim_de_semana:
             linha = [dia_formatado, formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3]), formatar_hora(anotacoes_do_dia[4])]
             tabela.add_row(linha)

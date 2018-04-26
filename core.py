@@ -12,7 +12,7 @@ class GeradorDePonto:
         self.minutos_de_almoco = minutos_de_almoco
         self.variacao_maxima = variacao_maxima
 
-    def gerar_por_periodo(self, inicio, fim):
+    def obter_anotacoes_por_periodo(self, inicio, fim):
         dia = inicio
         um_dia = timedelta(days=1)
         while dia <= fim:
