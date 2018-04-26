@@ -6,7 +6,7 @@ from datetime import timedelta
 
 class TestesDoGerador(unittest.TestCase):
     horario_de_chegada_oficial = time(hour=7, minute=30)
-    carga_horaria = 8
+    carga_horaria = timedelta(hours=8)
     minimo_de_minutos_de_almoco = 60
     minutos_de_almoco = 120
     variacao_maxima = 30
@@ -44,14 +44,14 @@ class TestesDoGerador(unittest.TestCase):
         assert all(map(esta_dentro_do_periodo, registros))
 
     def test_todos_os_registros_nao_ultrapassam_a_carga_horaria(self):
-        carga_horaria = 8
+        carga_horaria = timedelta(hours=8)
         calcular_duracao_do_expediente = lambda registro: registro[2] - registro[1] + registro[4] - registro[3]
         gerador = GeradorDePonto(self.horario_de_chegada_oficial, carga_horaria, self.preencher_fim_de_semana, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco)
 
         registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
 
         dias_trabalhados = filter(self.tem_registros, registros)
-        assert all(map(lambda registro: calcular_duracao_do_expediente(registro) == timedelta(hours=carga_horaria), dias_trabalhados))
+        assert all(map(lambda registro: calcular_duracao_do_expediente(registro) == carga_horaria, dias_trabalhados))
 
     def test_todos_os_registros_estao_dentro_da_variacao_maxima(self):
         variacao_maxima = 30

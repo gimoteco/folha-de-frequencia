@@ -8,7 +8,7 @@ from core import GeradorDePonto
 
 hoje = datetime.now()
 parser = argparse.ArgumentParser(description='Gera uma folha de ponto aleatória')
-parser.add_argument('--carga_horaria', required=False, type=int, default=8, help="Carga horaria em horas")
+parser.add_argument('--carga_horaria', required=False, type=str, default="08:00", help="Carga horaria em horas")
 parser.add_argument('--minutos_de_almoco', required=False, type=int, default=60, help="Minutos de almoço")
 parser.add_argument('--arquivo_de_saida', required=False, type=str, default='folha_de_frequencia.csv', help="Nome do arquivo csv de saída")
 parser.add_argument('--variacao_maxima', required=False, type=int, default=30, help="Variacao máxima em minutos nos horários")
@@ -23,9 +23,11 @@ args = parser.parse_args()
 INICIO_DO_CALENDARIO = datetime.strptime(args.inicio, '%d/%m/%y')
 FIM_DO_CALENDARIO = datetime.strptime(args.fim, '%d/%m/%y')
 HORA_DA_CHEGADA, MINUTO_DA_CHEGADA = map(lambda parte: int(parte), args.hora_de_chegada.split(':'))
+HORAS_DA_CARGA_HORARIA, MINUTOS_DA_CARGA_HORARIA = map(lambda parte: int(parte), args.carga_horaria.split(':'))
+CARGA_HORARIA = timedelta(hours=HORAS_DA_CARGA_HORARIA, minutes=MINUTOS_DA_CARGA_HORARIA)
 DIAS_DA_SEMANA = {5: 'SÁBADO', 6: 'DOMINGO'}
 tempo_da_chegado = time(hour=HORA_DA_CHEGADA, minute=MINUTO_DA_CHEGADA)
-gerador = GeradorDePonto(tempo_da_chegado, args.carga_horaria, args.preencher_fim_de_semana, args.minimo_de_almoco, args.variacao_maxima, args.minutos_de_almoco)
+gerador = GeradorDePonto(tempo_da_chegado, CARGA_HORARIA, args.preencher_fim_de_semana, args.minimo_de_almoco, args.variacao_maxima, args.minutos_de_almoco)
 registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CALENDARIO)
 
 def formatar_hora(data):

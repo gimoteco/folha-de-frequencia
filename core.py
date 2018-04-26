@@ -29,7 +29,7 @@ class GeradorDePonto:
         variacao_de_permanencia = self.obter_variacao_aleatoria_de_tempo()
         variacao_da_chegada = self.obter_variacao_aleatoria_de_tempo()
         duracao_do_almoco = timedelta(minutes=random.randint(self.minimo_de_minutos_de_almoco, self.minutos_de_almoco))
-        metade_do_expediente = timedelta(hours=self.carga_horaria / 2)
+        metade_do_expediente = timedelta(seconds=self.carga_horaria.total_seconds() / 2)
         permanencia_da_manha = metade_do_expediente  + variacao_de_permanencia
         horario_de_chegada = data_da_chegada_oficial + variacao_da_chegada
         saida_da_manha = horario_de_chegada + permanencia_da_manha
