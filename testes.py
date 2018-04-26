@@ -104,13 +104,11 @@ class TestesDoGerador(unittest.TestCase):
         registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
 
         dias_trabalhados = filter(self.tem_registros, registros)
-        print(list(registros)[0].marcacoes[0])
         assert all(map(lambda registro: self.esta_dentro_da_variacao(registro.dia, horario_de_chegada_oficial, registro.marcacoes[0], variacao_maxima), dias_trabalhados))
 
     @staticmethod
     def esta_dentro_da_variacao(dia, horario_oficial_de_chegada, horario_com_variacao, variacao):
         horario_original = datetime(dia.year, dia.month, dia.day, horario_oficial_de_chegada.hour, horario_oficial_de_chegada.minute)
-        print(horario_com_variacao, horario_original)
         variacao_realizada = horario_com_variacao - horario_original
         return abs(variacao_realizada.total_seconds()) <= variacao.total_seconds()
 
