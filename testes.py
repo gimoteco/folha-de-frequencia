@@ -50,8 +50,8 @@ class TestesDoRegistro(unittest.TestCase):
 class TestesDoGerador(unittest.TestCase):
     horario_de_chegada_oficial = time(hour=7, minute=30)
     carga_horaria = timedelta(hours=8)
-    minimo_de_minutos_de_almoco = 60
-    minutos_de_almoco = 120
+    minimo_de_minutos_de_almoco = timedelta(hours=1)
+    minutos_de_almoco = timedelta(hours=2)
     variacao_maxima = timedelta(minutes=30)
     inicio_do_periodo = datetime(2018, 4, 1)
     fim_do_periodo = datetime(2018, 4, 30)

@@ -1,5 +1,6 @@
 # TO DO
-- Padronizar minutos com timedelta
+- Parametrizar exportação em csv
+- Teste para garantir o respeito do minimo do horario de almoço
 - Validar inicio e fim (um após o outro)
 - Separar csv, cli
 - Configurar quantidade de periodos
