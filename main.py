@@ -1,10 +1,11 @@
 from prettytable import PrettyTable
 from datetime import datetime, time
 from datetime import timedelta
+from core import GeradorDePonto
 import random
 import argparse
 import csv
-from core import GeradorDePonto
+import pyperclip
 
 def formatar_hora(data):
     return data.strftime('%H:%M')
@@ -38,7 +39,6 @@ registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CAL
 
 cabecalho = ["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino"]
 tabela = PrettyTable(cabecalho)
-tabela.padding_width = 1
 
 with open(args.arquivo_de_saida, 'w', newline='') as csvfile:
     spamwriter = csv.writer(csvfile)
@@ -58,4 +58,5 @@ with open(args.arquivo_de_saida, 'w', newline='') as csvfile:
             spamwriter.writerow(linha)
 
 linhas_da_tabela = tabela.get_string()
+pyperclip.copy(linhas_da_tabela)
 print(linhas_da_tabela)
