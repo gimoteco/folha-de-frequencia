@@ -22,6 +22,7 @@ parser.add_argument('--variacao_maxima', required=False, type=str, default="0:30
 parser.add_argument('--minimo_de_almoco', required=False, type=int, default=60, help="Mínimo de almoço em minutos")
 parser.add_argument('--hora_de_chegada', required=True, type=str, default="07:30", help="Horário de chegada oficial (ex: 07:00)")
 parser.add_argument('--preencher_fim_de_semana', required=False, action='store_true', default=False, help="Bloquear o preenchimento dos finais de semana")
+parser.add_argument('--enviar_para_area_de_transferencia', required=False, action='store_true', default=False, help="Copiar tabela para area de transferência")
 parser.add_argument('--inicio', required=True, type=str, help="Data de início da folha de presença (ex: 01/04/18)")
 parser.add_argument('--fim', required=True, type=str, help="Data de fim da folha de presença (ex: 25/04/18)")
 
@@ -58,5 +59,8 @@ with open(args.arquivo_de_saida, 'w', newline='') as csvfile:
             spamwriter.writerow(linha)
 
 linhas_da_tabela = tabela.get_string()
-pyperclip.copy(linhas_da_tabela)
+
+if args.enviar_para_area_de_transferencia:
+    pyperclip.copy(linhas_da_tabela)
+
 print(linhas_da_tabela)
