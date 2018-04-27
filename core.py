@@ -17,18 +17,21 @@ class Registro:
         self.marcacoes.append(horario)
 
     @property
+    def eh_fim_de_semana(self):
+        return self.dia.weekday() > 4
+
+    @property
     def horario_total(self):
         duracao_dos_periodos = map(lambda periodo: periodo[1] - periodo[0], agrupar(self.marcacoes, 2))
         return sum(duracao_dos_periodos, timedelta(hours=0))
 
 class GeradorDePonto:
 
-    def __init__(self, horario_de_chegada_oficial, carga_horaria, preencher_fim_de_semana, minimo_de_almoco, variacao_maxima, minutos_de_almoco):
+    def __init__(self, horario_de_chegada_oficial, carga_horaria, minimo_de_almoco, variacao_maxima, tempo_de_almoco):
         self.carga_horaria = carga_horaria
         self.horario_de_chegada_oficial = horario_de_chegada_oficial
-        self.preencher_fim_de_semana = preencher_fim_de_semana
         self.minimo_de_almoco = minimo_de_almoco
-        self.minutos_de_almoco = minutos_de_almoco
+        self.tempo_de_almoco = tempo_de_almoco
         self.variacao_maxima = variacao_maxima
 
     def obter_anotacoes_por_periodo(self, inicio, fim):
@@ -46,7 +49,7 @@ class GeradorDePonto:
     def __obter_anotacoes_do_dia(self, data_da_chegada_oficial):
         variacao_de_permanencia = self.__obter_variacao_aleatoria_de_tempo()
         variacao_da_chegada = self.__obter_variacao_aleatoria_de_tempo()
-        duracao_do_almoco = timedelta(seconds=random.randint(self.minimo_de_almoco.total_seconds(), self.minutos_de_almoco.total_seconds()))
+        duracao_do_almoco = timedelta(seconds=random.randint(self.minimo_de_almoco.total_seconds(), self.tempo_de_almoco.total_seconds()))
         metade_do_expediente = timedelta(seconds=self.carga_horaria.total_seconds() / 2)
         permanencia_da_manha = metade_do_expediente  + variacao_de_permanencia
         horario_de_chegada = datetime.combine(data_da_chegada_oficial, self.horario_de_chegada_oficial) + variacao_da_chegada

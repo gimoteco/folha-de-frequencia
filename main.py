@@ -2,18 +2,15 @@ from prettytable import PrettyTable
 from datetime import datetime, time
 from datetime import timedelta
 from core import GeradorDePonto
+from helpers import formatar_hora
+from helpers import converter_hora_em_texto_para_timedelta
+from helpers import converter_hora_em_texto_para_time
+from helpers import converter_data
 from io import StringIO
 import random
 import argparse
 import csv
 import pyperclip
-
-def formatar_hora(data):
-    return data.strftime('%H:%M')
-
-def converter_hora_em_texto_para_timedelta(hora):
-    HORAS, MINUTOS = map(lambda parte: int(parte), hora.split(':'))
-    return timedelta(hours=HORAS, minutes=MINUTOS)
 
 parser = argparse.ArgumentParser(description='Gera uma folha de ponto aleatória')
 parser.add_argument('--carga_horaria', required=False, type=str, default="08:00", help="Carga horaria em horas")
@@ -29,16 +26,16 @@ parser.add_argument('--fim', required=True, type=str, help="Data de fim da folha
 
 args = parser.parse_args()
 
-INICIO_DO_CALENDARIO = datetime.strptime(args.inicio, '%d/%m/%y')
-FIM_DO_CALENDARIO = datetime.strptime(args.fim, '%d/%m/%y')
-HORA_DA_CHEGADA, MINUTO_DA_CHEGADA = map(lambda parte: int(parte), args.hora_de_chegada.split(':'))
+DIAS_DA_SEMANA = {5: 'SÁBADO', 6: 'DOMINGO'}
+INICIO_DO_CALENDARIO = converter_data(args.inicio)
+FIM_DO_CALENDARIO = converter_data(args.fim)
 CARGA_HORARIA = converter_hora_em_texto_para_timedelta(args.carga_horaria)
 VARIACAO_MAXIMA = converter_hora_em_texto_para_timedelta(args.variacao_maxima)
 TEMPO_DE_ALMOCO = converter_hora_em_texto_para_timedelta(args.tempo_de_almoco)
 MINIMO_DE_ALMOCO = converter_hora_em_texto_para_timedelta(args.minimo_de_almoco)
-DIAS_DA_SEMANA = {5: 'SÁBADO', 6: 'DOMINGO'}
-hora_da_chegada = time(hour=HORA_DA_CHEGADA, minute=MINUTO_DA_CHEGADA)
-gerador = GeradorDePonto(hora_da_chegada, CARGA_HORARIA, args.preencher_fim_de_semana, MINIMO_DE_ALMOCO, VARIACAO_MAXIMA, TEMPO_DE_ALMOCO)
+hora_da_chegada = converter_hora_em_texto_para_time(args.hora_de_chegada)
+
+gerador = GeradorDePonto(hora_da_chegada, CARGA_HORARIA, MINIMO_DE_ALMOCO, VARIACAO_MAXIMA, TEMPO_DE_ALMOCO)
 registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CALENDARIO)
 
 cabecalho = ["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino"]
