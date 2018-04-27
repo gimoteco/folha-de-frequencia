@@ -32,6 +32,9 @@ class GeradorDePonto:
         self.variacao_maxima = variacao_maxima
 
     def obter_anotacoes_por_periodo(self, inicio, fim):
+        if inicio > fim :
+            raise Exception("Início e fim do período devem ser consecutivos")
+
         dia = inicio
         um_dia = timedelta(days=1)
         while dia <= fim:

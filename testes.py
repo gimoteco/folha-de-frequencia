@@ -115,6 +115,17 @@ class TestesDoGerador(unittest.TestCase):
         dias_trabalhados = filter(self.tem_registros, registros)
         assert all(map(lambda registro: self.calcular_tempo_de_almoco(registro) >= tempo_de_almoco, dias_trabalhados))
 
+    def test_inicio_e_fim_devem_ser_consecutivos(self):
+        inicio = datetime.now()
+        fim = inicio - timedelta(days=2)
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, 
+            self.preencher_fim_de_semana, self.minimo_de_minutos_de_almoco, self.variacao_maxima,
+            self.minutos_de_almoco)
+
+        with self.assertRaisesRegex(Exception, "Início e fim do período devem ser consecutivos"):
+            list(gerador.obter_anotacoes_por_periodo(inicio, fim))
+
+
     @staticmethod
     def esta_dentro_da_variacao(dia, horario_oficial_de_chegada, horario_com_variacao, variacao):
         horario_original = datetime(dia.year, dia.month, dia.day, horario_oficial_de_chegada.hour, horario_oficial_de_chegada.minute)
