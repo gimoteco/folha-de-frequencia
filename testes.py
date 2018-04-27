@@ -106,12 +106,24 @@ class TestesDoGerador(unittest.TestCase):
         dias_trabalhados = filter(self.tem_registros, registros)
         assert all(map(lambda registro: self.esta_dentro_da_variacao(registro.dia, horario_de_chegada_oficial, registro.marcacoes[0], variacao_maxima), dias_trabalhados))
 
+    def test_todos_os_registros_respeitam_o_minimo_de_almoco(self):
+        tempo_de_almoco = timedelta(hours=1)
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.preencher_fim_de_semana, self.minimo_de_minutos_de_almoco, self.variacao_maxima, tempo_de_almoco)
+        
+        registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
+
+        dias_trabalhados = filter(self.tem_registros, registros)
+        assert all(map(lambda registro: self.calcular_tempo_de_almoco(registro) >= tempo_de_almoco, dias_trabalhados))
+
     @staticmethod
     def esta_dentro_da_variacao(dia, horario_oficial_de_chegada, horario_com_variacao, variacao):
         horario_original = datetime(dia.year, dia.month, dia.day, horario_oficial_de_chegada.hour, horario_oficial_de_chegada.minute)
         variacao_realizada = horario_com_variacao - horario_original
         return abs(variacao_realizada.total_seconds()) <= variacao.total_seconds()
 
+    @staticmethod
+    def calcular_tempo_de_almoco(registro):
+        return registro.marcacoes[-1] - registro.marcacoes[0] - registro.horario_total
 
 if __name__ == "__main__":
     unittest.main()
