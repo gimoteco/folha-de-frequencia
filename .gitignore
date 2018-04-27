@@ -1,7 +1,7 @@
 # Project related files and folders
 .env/
 folha_de_frequencia.csv
-
+.vscode/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
