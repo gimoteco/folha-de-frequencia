@@ -2,6 +2,7 @@ from prettytable import PrettyTable
 from datetime import datetime, time
 from datetime import timedelta
 from core import GeradorDePonto
+from io import StringIO
 import random
 import argparse
 import csv
@@ -17,7 +18,7 @@ def converter_hora_em_texto_para_timedelta(hora):
 parser = argparse.ArgumentParser(description='Gera uma folha de ponto aleatória')
 parser.add_argument('--carga_horaria', required=False, type=str, default="08:00", help="Carga horaria em horas")
 parser.add_argument('--tempo_de_almoco', required=False, type=str, default="1:00", help="Tempo de almoço (Padrão: 1:00)")
-parser.add_argument('--arquivo_de_saida', required=False, type=str, default='folha_de_frequencia.csv', help="Nome do arquivo csv de saída")
+parser.add_argument('--csv', required=False, type=str, default=None, help="Nome do arquivo csv de saída")
 parser.add_argument('--variacao_maxima', required=False, type=str, default="0:30", help="Variacao máxima em minutos nos horários")
 parser.add_argument('--minimo_de_almoco', required=False, type=str, default="1:00", help="Mínimo de almoço em minutos")
 parser.add_argument('--hora_de_chegada', required=True, type=str, default="07:30", help="Horário de chegada oficial (ex: 07:00)")
@@ -43,24 +44,29 @@ registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CAL
 cabecalho = ["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino"]
 tabela = PrettyTable(cabecalho)
 
-with open(args.arquivo_de_saida, 'w', newline='') as csvfile:
-    spamwriter = csv.writer(csvfile)
-    spamwriter.writerow(cabecalho)
-    for registro in registros:
-        dia = registro.dia
-        dia_formatado = dia.strftime('%d/%m')
-        anotacoes_do_dia = registro.marcacoes
-        if dia.weekday() < 5 or args.preencher_fim_de_semana:
-            linha = [dia_formatado, formatar_hora(anotacoes_do_dia[0]), formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3])]
-            tabela.add_row(linha)
-            spamwriter.writerow(linha)
-        else:
-            dia_da_semana = DIAS_DA_SEMANA[dia.weekday()]
-            linha = [dia_formatado] + [dia_da_semana] * 4
-            tabela.add_row(linha)
-            spamwriter.writerow(linha)
+conteudo_em_csv = StringIO()
+spamwriter = csv.writer(conteudo_em_csv)
+spamwriter.writerow(cabecalho)
+
+for registro in registros:
+    dia = registro.dia
+    dia_formatado = dia.strftime('%d/%m')
+    anotacoes_do_dia = registro.marcacoes
+    if dia.weekday() < 5 or args.preencher_fim_de_semana:
+        linha = [dia_formatado, formatar_hora(anotacoes_do_dia[0]), formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3])]
+        tabela.add_row(linha)
+        spamwriter.writerow(linha)
+    else:
+        dia_da_semana = DIAS_DA_SEMANA[dia.weekday()]
+        linha = [dia_formatado] + [dia_da_semana] * 4
+        tabela.add_row(linha)
+        spamwriter.writerow(linha)
 
 linhas_da_tabela = tabela.get_string()
+
+if args.csv:
+    with open(args.csv, 'w', newline='') as arquivo_do_csv:
+        arquivo_do_csv.write(conteudo_em_csv.getvalue())
 
 if args.enviar_para_area_de_transferencia:
     pyperclip.copy(linhas_da_tabela)
