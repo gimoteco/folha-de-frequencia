@@ -35,7 +35,7 @@ TEMPO_DE_ALMOCO = converter_hora_em_texto_para_timedelta(args.tempo_de_almoco)
 MINIMO_DE_ALMOCO = converter_hora_em_texto_para_timedelta(args.minimo_de_almoco)
 hora_da_chegada = converter_hora_em_texto_para_time(args.hora_de_chegada)
 
-gerador = GeradorDePonto(hora_da_chegada, CARGA_HORARIA, MINIMO_DE_ALMOCO, VARIACAO_MAXIMA, TEMPO_DE_ALMOCO)
+gerador = GeradorDePonto(hora_da_chegada, CARGA_HORARIA, MINIMO_DE_ALMOCO, VARIACAO_MAXIMA, TEMPO_DE_ALMOCO, args.preencher_fim_de_semana)
 registros = gerador.obter_anotacoes_por_periodo(INICIO_DO_CALENDARIO, FIM_DO_CALENDARIO)
 
 cabecalho = ["Data", "Entrada matutino", "Saída matutino", "Entrada vespertino", "Saída vespertino"]
@@ -48,16 +48,9 @@ spamwriter.writerow(cabecalho)
 for registro in registros:
     dia = registro.dia
     dia_formatado = dia.strftime('%d/%m')
-    anotacoes_do_dia = registro.marcacoes
-    if dia.weekday() < 5 or args.preencher_fim_de_semana:
-        linha = [dia_formatado, formatar_hora(anotacoes_do_dia[0]), formatar_hora(anotacoes_do_dia[1]), formatar_hora(anotacoes_do_dia[2]), formatar_hora(anotacoes_do_dia[3])]
-        tabela.add_row(linha)
-        spamwriter.writerow(linha)
-    else:
-        dia_da_semana = DIAS_DA_SEMANA[dia.weekday()]
-        linha = [dia_formatado] + [dia_da_semana] * 4
-        tabela.add_row(linha)
-        spamwriter.writerow(linha)
+    linha = [dia_formatado, *(map(lambda marcacao: formatar_hora(marcacao), registro.marcacoes) if any(registro.marcacoes) else ["", "", "", ""])]
+    tabela.add_row(linha)
+    spamwriter.writerow(linha)
 
 linhas_da_tabela = tabela.get_string()
 

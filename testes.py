@@ -70,15 +70,18 @@ class TestesDoGerador(unittest.TestCase):
     preencher_fim_de_semana = False
     
     def test_nao_deve_gerar_registros_pro_fim_de_semana_quando_setado(self):
-        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco)
+        preencher_pro_fds = False
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco, preencher_pro_fds)
         esta_sem_registros = lambda registro: not any(registro.marcacoes)
 
         registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
         
-        assert all(map(self.eh_fim_de_semana, filter(esta_sem_registros, registros)))
+        registros_de_fds = filter(self.eh_fim_de_semana, registros)
+        assert all(map(esta_sem_registros, registros_de_fds)) 
 
     def test_deve_gerar_registros_pro_fim_de_semana_quando_setado(self):
-        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco)
+        preencher_pro_fds = True        
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco, preencher_pro_fds)
 
         registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
         
@@ -87,7 +90,7 @@ class TestesDoGerador(unittest.TestCase):
     def test_deve_gerar_todos_os_dias_dentro_do_periodo(self):
         inicio = datetime(2018, 4, 1)
         fim = datetime(2018, 4, 30)
-        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco)
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco, self.preencher_fim_de_semana)
         esta_dentro_do_periodo = lambda registro: registro.dia >= inicio.date() and registro.dia <= fim.date()
 
         registros = gerador.obter_anotacoes_por_periodo(inicio, fim)
@@ -97,7 +100,7 @@ class TestesDoGerador(unittest.TestCase):
     def test_todos_os_registros_nao_ultrapassam_a_carga_horaria(self):
         carga_horaria = timedelta(hours=8)
         calcular_duracao_do_expediente = lambda registro: registro.horario_total
-        gerador = GeradorDePonto(self.horario_de_chegada_oficial, carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco)
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco, self.preencher_fim_de_semana)
 
         registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
 
@@ -107,7 +110,7 @@ class TestesDoGerador(unittest.TestCase):
     def test_todos_os_registros_estao_dentro_da_variacao_maxima(self):
         variacao_maxima = timedelta(minutes=30)
         horario_de_chegada_oficial = time(hour=7, minute=30)
-        gerador = GeradorDePonto(horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, variacao_maxima, self.minutos_de_almoco)
+        gerador = GeradorDePonto(horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, variacao_maxima, self.minutos_de_almoco, self.preencher_fim_de_semana)
         
         registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
 
@@ -116,7 +119,7 @@ class TestesDoGerador(unittest.TestCase):
 
     def test_todos_os_registros_respeitam_o_minimo_de_almoco(self):
         tempo_de_almoco = timedelta(hours=1)
-        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, tempo_de_almoco)
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, tempo_de_almoco, self.preencher_fim_de_semana)
         
         registros = gerador.obter_anotacoes_por_periodo(self.inicio_do_periodo, self.fim_do_periodo)
 
@@ -126,12 +129,10 @@ class TestesDoGerador(unittest.TestCase):
     def test_inicio_e_fim_devem_ser_consecutivos(self):
         inicio = datetime.now()
         fim = inicio - timedelta(days=2)
-        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima,
-            self.minutos_de_almoco)
+        gerador = GeradorDePonto(self.horario_de_chegada_oficial, self.carga_horaria, self.minimo_de_minutos_de_almoco, self.variacao_maxima, self.minutos_de_almoco, self.preencher_fim_de_semana)
 
         with self.assertRaisesRegex(Exception, "Início e fim do período devem ser consecutivos"):
             list(gerador.obter_anotacoes_por_periodo(inicio, fim))
-
 
     @staticmethod
     def esta_dentro_da_variacao(dia, horario_oficial_de_chegada, horario_com_variacao, variacao):

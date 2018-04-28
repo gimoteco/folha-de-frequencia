@@ -13,9 +13,7 @@ CORS(app)
 def index():
     return render_template('index.html')
 
-def mapear_registro(registro, preencher_fds):
-    if preencher_fds and registro.eh_fim_de_semana:
-        pass
+def mapear_registro(registro):
     return {'dia': registro.dia, 'marcacoes': registro.marcacoes}
 
 @app.route('/folhadefrequencia', methods=['GET'])
@@ -27,7 +25,7 @@ def obter_ponto():
     variacao_maxima = converter_hora_em_texto_para_timedelta(request.args.get('variacao_maxima'))
     tempo_de_almoco = converter_hora_em_texto_para_timedelta(request.args.get('tempo_de_almoco'))
 
-    gerador = GeradorDePonto(hora_de_chegada, carga_horaria,  minimo_de_almoco, variacao_maxima, tempo_de_almoco)
+    gerador = GeradorDePonto(hora_de_chegada, carga_horaria, minimo_de_almoco, variacao_maxima, tempo_de_almoco, preencher_fds)
     inicio = converter_data(request.args.get('inicio'))
     fim = converter_data(request.args.get('fim'))
 

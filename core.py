@@ -27,12 +27,13 @@ class Registro:
 
 class GeradorDePonto:
 
-    def __init__(self, horario_de_chegada_oficial, carga_horaria, minimo_de_almoco, variacao_maxima, tempo_de_almoco):
+    def __init__(self, horario_de_chegada_oficial, carga_horaria, minimo_de_almoco, variacao_maxima, tempo_de_almoco, preencher_fim_de_semana):
         self.carga_horaria = carga_horaria
         self.horario_de_chegada_oficial = horario_de_chegada_oficial
         self.minimo_de_almoco = minimo_de_almoco
         self.tempo_de_almoco = tempo_de_almoco
         self.variacao_maxima = variacao_maxima
+        self.preencher_fim_de_semana = preencher_fim_de_semana
 
     def obter_anotacoes_por_periodo(self, inicio, fim):
         if inicio > fim :
@@ -47,6 +48,11 @@ class GeradorDePonto:
             dia += um_dia
 
     def __obter_anotacoes_do_dia(self, data_da_chegada_oficial):
+        registro = Registro(data_da_chegada_oficial)
+        
+        if registro.eh_fim_de_semana and not self.preencher_fim_de_semana:
+            return registro
+
         variacao_de_permanencia = self.__obter_variacao_aleatoria_de_tempo()
         variacao_da_chegada = self.__obter_variacao_aleatoria_de_tempo()
         duracao_do_almoco = timedelta(seconds=random.randint(self.minimo_de_almoco.total_seconds(), self.tempo_de_almoco.total_seconds()))
@@ -56,7 +62,6 @@ class GeradorDePonto:
         saida_da_manha = horario_de_chegada + permanencia_da_manha
         chegada_da_tarde = saida_da_manha + duracao_do_almoco
         saida_da_tarde = chegada_da_tarde - variacao_de_permanencia + metade_do_expediente
-        registro = Registro(data_da_chegada_oficial)
         registro.marcar(horario_de_chegada)
         registro.marcar(saida_da_manha)
         registro.marcar(chegada_da_tarde)

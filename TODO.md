@@ -1,5 +1,5 @@
 # TO DO
-- Preencher só fds no dominio
+- Preencher fds no dominio
 - Criar interface web
 - Separar valores padrão
 - Configurar quantidade de periodos
