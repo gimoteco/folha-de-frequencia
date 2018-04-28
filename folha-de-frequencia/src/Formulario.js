@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Button, Form} from 'semantic-ui-react';
+import axios from 'axios';
 
 class Formulario extends Component {
     tratarMudanca = (e, { name, value, checked }) => this.setState({ [name]: value || checked });
@@ -27,7 +28,7 @@ class Formulario extends Component {
             preencherFinaisDeSemana
         } = this.state;
 
-        this.props.aoEnviar({
+        const parametros = {
             hora_de_chegada: horaDeChegada,
             carga_horaria: cargaHoraria,
             preencher_fim_de_semana: preencherFinaisDeSemana,
@@ -36,8 +37,20 @@ class Formulario extends Component {
             tempo_de_almoco: duracaoDoAlmoco,
             inicio: inicio,
             fim: fim
-        });
+        }
+
+        axios.get('http://127.0.0.1:5000/folhadefrequencia', {params: parametros})
+            .then(resposta => {
+                this.props.registrosCarregados(resposta.data);
+            })
+            .catch(function (error) {
+            console.log(error);
+            });        
     }
+
+    carregarRegistros(parametros) {
+
+      }
 
   render() {
     return <Form onSubmit={() => this.enviar()}>
