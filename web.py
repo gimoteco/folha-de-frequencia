@@ -16,11 +16,14 @@ def index():
 def mapear_registro(registro):
     return {'dia': registro.dia, 'marcacoes': registro.marcacoes}
 
+def str2bool(v):
+  return v.lower() in ("yes", "true", "t", "1")
+
 @app.route('/folhadefrequencia', methods=['GET'])
 def obter_ponto():
     hora_de_chegada = converter_hora_em_texto_para_time(request.args.get('hora_de_chegada'))
     carga_horaria = converter_hora_em_texto_para_timedelta(request.args.get('carga_horaria'))
-    preencher_fds = bool(int(request.args.get('preencher_fim_de_semana')))
+    preencher_fds = str2bool(request.args.get('preencher_fim_de_semana'))
     minimo_de_almoco = converter_hora_em_texto_para_timedelta(request.args.get('minimo_de_almoco'))
     variacao_maxima = converter_hora_em_texto_para_timedelta(request.args.get('variacao_maxima'))
     tempo_de_almoco = converter_hora_em_texto_para_timedelta(request.args.get('tempo_de_almoco'))

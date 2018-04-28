@@ -1,7 +1,7 @@
 # TO DO
-- Preencher fds no dominio
-- Criar interface web
+- Usar datepicker
+- Usar um timepicker
+- Deixar campos mais complexos como opção avançada
+- Padronizar spaces e tabs
 - Separar valores padrão
 - Configurar quantidade de periodos
-- Separar csv, cli
-- Testar interfaces
