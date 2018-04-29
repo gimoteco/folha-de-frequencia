@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "clipboard": "^2.0.0",
     "moment": "^2.22.1",
+    "rc-time-picker": "^3.3.1",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-scripts": "1.1.4",

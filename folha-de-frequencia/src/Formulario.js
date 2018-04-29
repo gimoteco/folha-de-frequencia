@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {Button, Form, Accordion, Icon} from 'semantic-ui-react';
 import axios from 'axios';
+import TimePicker from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css';
 
 class Formulario extends Component {
     tratarMudanca = (e, { name, value, checked }) => this.setState({ [name]: value || checked });
@@ -63,6 +65,10 @@ class Formulario extends Component {
         </Form.Group>
 
         <Form.Group>
+            <Form.Field>
+                <label></label>
+                <TimePicker showSecond={false}/>
+            </Form.Field>
             <Form.Input label="Início do período" name="inicio" value={this.state.inicio} onChange={this.tratarMudanca} />
             <Form.Input label="Fim do período" name="fim" value={this.state.fim} onChange={this.tratarMudanca} />
         </Form.Group>
