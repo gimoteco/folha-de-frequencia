@@ -4,6 +4,7 @@ import {Button, Form, Accordion, Icon} from 'semantic-ui-react';
 import axios from 'axios';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
+import moment from 'moment';
 
 class Formulario extends Component {
     tratarMudanca = (e, { name, value, checked }) => this.setState({ [name]: value || checked });
@@ -13,6 +14,9 @@ class Formulario extends Component {
         const newIndex = activeIndex === index ? -1 : index
         this.setState({ activeIndex: newIndex })
     }
+    tratarMudancaNoTimePicker = (value, name) => {
+        this.setState({ [name]: value.format('H:m') })
+    } 
 
     constructor(props) {
         super(props);
@@ -59,16 +63,21 @@ class Formulario extends Component {
   render() {
     return <Form onSubmit={() => this.enviar()}>
         <Form.Group>
-            <Form.Input label="Hora de chegada" name="horaDeChegada" value={this.state.horaDeChegada} onChange={this.tratarMudanca} />
-            <Form.Input label="Carga horária" name="cargaHoraria" value={this.state.cargaHoraria} onChange={this.tratarMudanca} />
-            <Form.Input label="Duração do almoço" name="duracaoDoAlmoco" value={this.state.duracaoDoAlmoco} onChange={this.tratarMudanca} />    
+            <Form.Field>
+                <label>Hora de chegada</label>
+                <TimePicker showSecond={false} defaultValue={moment(this.state.horaDeChegada, "H:m")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
+            </Form.Field>
+            <Form.Field>
+                <label>Carga horária</label>
+                <TimePicker showSecond={false} defaultValue={moment(this.state.cargaHoraria, "H:m")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
+            </Form.Field>
+            <Form.Field>
+                <label>Duração do almoço</label>
+                <TimePicker showSecond={false} defaultValue={moment(this.state.duracaoDoAlmoco, "H:m")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
+            </Form.Field>
         </Form.Group>
 
         <Form.Group>
-            <Form.Field>
-                <label></label>
-                <TimePicker showSecond={false}/>
-            </Form.Field>
             <Form.Input label="Início do período" name="inicio" value={this.state.inicio} onChange={this.tratarMudanca} />
             <Form.Input label="Fim do período" name="fim" value={this.state.fim} onChange={this.tratarMudanca} />
         </Form.Group>
