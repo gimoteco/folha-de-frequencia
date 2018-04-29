@@ -5,5 +5,5 @@
 - Usar datepicker
 - Usar um timepicker
 - Padronizar spaces e tabs
-- Separar valores padrão
 - Configurar quantidade de periodos
+- Exibir descricao de sábado e domingo na web
