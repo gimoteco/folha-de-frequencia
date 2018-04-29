@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Button, Form} from 'semantic-ui-react';
+import {Button, Form, Accordion, Icon} from 'semantic-ui-react';
 import axios from 'axios';
 
 class Formulario extends Component {
     tratarMudanca = (e, { name, value, checked }) => this.setState({ [name]: value || checked });
+    handleClick = (e, titleProps) => {
+        const { index } = titleProps
+        const { activeIndex } = this.state
+        const newIndex = activeIndex === index ? -1 : index
+        this.setState({ activeIndex: newIndex })
+    }
 
     constructor(props) {
         super(props);
@@ -44,31 +50,46 @@ class Formulario extends Component {
                 this.props.registrosCarregados(resposta.data);
             })
             .catch(function (error) {
-            console.log(error);
+                console.log(error);
             });        
     }
 
-    carregarRegistros(parametros) {
-
-      }
-
   render() {
     return <Form onSubmit={() => this.enviar()}>
-        <Form.Input label="Carga horária" name="cargaHoraria" value={this.state.cargaHoraria} onChange={this.tratarMudanca} />
-        <Form.Input label="Variação máxima" name="variacaoMaxima" value={this.state.variacaoMaxima} onChange={this.tratarMudanca} />
-        <Form.Input label="Mínimo de almoço" name="minimoDeAlmoco" value={this.state.minimoDeAlmoco} onChange={this.tratarMudanca} />
-        <Form.Input label="Duração do almoço" name="duracaoDoAlmoco" value={this.state.duracaoDoAlmoco} onChange={this.tratarMudanca} />    
-        <Form.Input label="Hora de chegada" name="horaDeChegada" value={this.state.horaDeChegada} onChange={this.tratarMudanca} />
-        <Form.Input label="Início do período" name="inicio" value={this.state.inicio} onChange={this.tratarMudanca} />
-        <Form.Input label="Fim do período" name="fim" value={this.state.fim} onChange={this.tratarMudanca} />
-        <Form.Checkbox label="Preencher os finais de semana" name="preencherFinaisDeSemana" checked={this.state.preencherFinaisDeSemana} onChange={this.tratarMudanca}/>
+        <Form.Group>
+            <Form.Input label="Hora de chegada" name="horaDeChegada" value={this.state.horaDeChegada} onChange={this.tratarMudanca} />
+            <Form.Input label="Carga horária" name="cargaHoraria" value={this.state.cargaHoraria} onChange={this.tratarMudanca} />
+            <Form.Input label="Duração do almoço" name="duracaoDoAlmoco" value={this.state.duracaoDoAlmoco} onChange={this.tratarMudanca} />    
+        </Form.Group>
+
+        <Form.Group>
+            <Form.Input label="Início do período" name="inicio" value={this.state.inicio} onChange={this.tratarMudanca} />
+            <Form.Input label="Fim do período" name="fim" value={this.state.fim} onChange={this.tratarMudanca} />
+        </Form.Group>
+
+        <Accordion>
+            <Accordion.Title active={this.state.activeIndex === 0} index={0} onClick={this.handleClick}>
+                <Icon name='dropdown' />
+                Opções avançadas
+            </Accordion.Title>
+            <Accordion.Content active={this.state.activeIndex === 0}>
+                <Form.Group>
+                    <Form.Input label="Mínimo de almoço" name="minimoDeAlmoco" value={this.state.minimoDeAlmoco} onChange={this.tratarMudanca} />
+                    <Form.Input label="Variação máxima" name="variacaoMaxima" value={this.state.variacaoMaxima} onChange={this.tratarMudanca} />
+                </Form.Group>
+                <Form.Group>
+                <Form.Checkbox label="Preencher os finais de semana" name="preencherFinaisDeSemana" checked={this.state.preencherFinaisDeSemana} onChange={this.tratarMudanca}/>
+                </Form.Group>
+            </Accordion.Content>
+        </Accordion>
+                
         <Button primary type='submit'>Gerar folha de frequência</Button>
     </Form>
   }
 }
 
 Formulario.propTypes = {
-    aoEnviar: PropTypes.func.isRequired
+    registrosCarregados: PropTypes.func.isRequired
 };
 
 export default Formulario;
