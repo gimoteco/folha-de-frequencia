@@ -13,7 +13,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 class Formulario extends Component {
     FORMATO_DA_HORA = 'HH:mm';
     FORMATO_DA_DATA = 'DD/MM/YY';
-    tratarMudanca = (e, { name, value, checked }) => value && this.setState({ [name]: value || checked });
+    tratarMudanca = (e, { name, value, checked }) => this.setState({ [name]: value || checked });
     handleClick = (e, titleProps) => {
         const { index } = titleProps
         const { activeIndex } = this.state

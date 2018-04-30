@@ -6,11 +6,13 @@ import Formulario from './Formulario';
 
 class App extends Component {
   ID_DA_TABELA_DE_REGISTROS = 'registros';
+  TEMPO_DE_CARREGAMENTO_DOS_REGISTROS = 1000;
 
   constructor(props) {
     super(props);
     this.state = {
-        registros: []
+        registros: [],
+        carregando: false
     };
   }
 
@@ -18,7 +20,19 @@ class App extends Component {
     this.formulario.enviar();
   }
 
-  carregarRegistros = (registros) => this.setState({registros: registros})
+  carregarRegistros = (registros) => {
+    this.setState({
+      carregando: true,
+      registros: []
+
+    });
+    setTimeout(() => {
+      this.setState({
+        registros: registros,
+        carregando: false
+      })
+    }, this.TEMPO_DE_CARREGAMENTO_DOS_REGISTROS);
+  };
 
   render() {
     return (
@@ -27,7 +41,7 @@ class App extends Component {
       <Segment>
         <Formulario registrosCarregados={this.carregarRegistros} ref={(referencia) => this.formulario = referencia} />
       </Segment>
-      <Segment>
+      <Segment loading={this.state.carregando}>
         <BotaoDeCopiar id="copiarParaAreaDeTransferencia" alvo={`#${this.ID_DA_TABELA_DE_REGISTROS}`} />
         <Registros registros={this.state.registros} id={this.ID_DA_TABELA_DE_REGISTROS} />
       </Segment>
