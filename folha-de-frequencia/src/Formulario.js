@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import {Button, Form, Accordion, Icon} from 'semantic-ui-react';
 import axios from 'axios';
 import TimePicker from 'rc-time-picker';
-import 'rc-time-picker/assets/index.css';
 import moment from 'moment';
+import 'moment/locale/pt-br';
+import DatePicker from 'react-datepicker';
+
+import 'rc-time-picker/assets/index.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 class Formulario extends Component {
+    FORMATO_DA_HORA = 'HH:mm';
+    FORMATO_DA_DATA = 'DD/MM/YY';
     tratarMudanca = (e, { name, value, checked }) => this.setState({ [name]: value || checked });
     handleClick = (e, titleProps) => {
         const { index } = titleProps
@@ -15,8 +21,11 @@ class Formulario extends Component {
         this.setState({ activeIndex: newIndex })
     }
     tratarMudancaNoTimePicker = (value, name) => {
-        this.setState({ [name]: value.format('HH:mm') })
-    } 
+        this.setState({ [name]: value.format(this.FORMATO_DA_HORA) })
+    }
+    tratarMudancaNoDatePicker = (value, name) => {
+        this.setState({ [name]: value.format(this.FORMATO_DA_DATA) })
+    }
 
     constructor(props) {
         super(props);
@@ -30,6 +39,10 @@ class Formulario extends Component {
             inicio: "29/03/18",
             fim: "30/04/18"
         };
+    }
+
+    componentDidMount() {
+        moment.locale('pt-BR');
     }
 
     enviar() {
@@ -65,21 +78,28 @@ class Formulario extends Component {
         <Form.Group>
             <Form.Field>
                 <label>Hora de chegada</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.horaDeChegada, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
+                <TimePicker showSecond={false} defaultValue={moment(this.state.horaDeChegada, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
             </Form.Field>
             <Form.Field>
                 <label>Carga horária</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.cargaHoraria, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
+                <TimePicker showSecond={false} defaultValue={moment(this.state.cargaHoraria, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
             </Form.Field>
             <Form.Field>
                 <label>Duração do almoço</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.duracaoDoAlmoco, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
+                <TimePicker showSecond={false} defaultValue={moment(this.state.duracaoDoAlmoco, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
             </Form.Field>
         </Form.Group>
 
         <Form.Group>
-            <Form.Input label="Início do período" name="inicio" value={this.state.inicio} onChange={this.tratarMudanca} />
-            <Form.Input label="Fim do período" name="fim" value={this.state.fim} onChange={this.tratarMudanca} />
+            <Form.Field>
+                <label>Início do período</label>
+                <DatePicker selected={moment(this.state.inicio, this.FORMATO_DA_DATA)} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'inicio')} dateFormat={this.FORMATO_DA_DATA} />
+            </Form.Field>
+
+            <Form.Field>
+                <label>Fim do período</label>
+                <DatePicker selected={moment(this.state.fim, this.FORMATO_DA_DATA)} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
+            </Form.Field>            
         </Form.Group>
 
         <Accordion>
@@ -91,11 +111,11 @@ class Formulario extends Component {
                 <Form.Group>
                     <Form.Field>
                         <label>Duração mínima do almoço</label>
-                        <TimePicker showSecond={false} defaultValue={moment(this.state.minimoDeAlmoco, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "minimoDeAlmoco")} />
+                        <TimePicker showSecond={false} defaultValue={moment(this.state.minimoDeAlmoco, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "minimoDeAlmoco")} />
                     </Form.Field>
                     <Form.Field>
                         <label>Adiantamento ou atraso máximo</label>
-                        <TimePicker showSecond={false} defaultValue={moment(this.state.variacaoMaxima, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "variacaoMaxima")} />
+                        <TimePicker showSecond={false} defaultValue={moment(this.state.variacaoMaxima, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "variacaoMaxima")} />
                     </Form.Field>
                 </Form.Group>
                 <Form.Group>

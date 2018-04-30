@@ -8,6 +8,7 @@
     "moment": "^2.22.1",
     "rc-time-picker": "^3.3.1",
     "react": "^16.3.2",
+    "react-datepicker": "^1.4.1",
     "react-dom": "^16.3.2",
     "react-scripts": "1.1.4",
     "semantic-ui-react": "^0.79.1"
