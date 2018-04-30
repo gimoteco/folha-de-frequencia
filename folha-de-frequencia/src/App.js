@@ -23,7 +23,7 @@ class App extends Component {
   render() {
     return (
     <Container>
-      <Header>Gerador de folha de frequência</Header>
+      <Header as="h1">Gerador de folha de frequência</Header>
       <Segment>
         <Formulario registrosCarregados={this.carregarRegistros} ref={(referencia) => this.formulario = referencia} />
       </Segment>

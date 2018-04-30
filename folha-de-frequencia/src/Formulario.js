@@ -13,7 +13,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 class Formulario extends Component {
     FORMATO_DA_HORA = 'HH:mm';
     FORMATO_DA_DATA = 'DD/MM/YY';
-    tratarMudanca = (e, { name, value, checked }) => this.setState({ [name]: value || checked });
+    tratarMudanca = (e, { name, value, checked }) => value && this.setState({ [name]: value || checked });
     handleClick = (e, titleProps) => {
         const { index } = titleProps
         const { activeIndex } = this.state
@@ -31,7 +31,7 @@ class Formulario extends Component {
         this.setState({
             preencherFinaisDeSemana: false,
             cargaHoraria: moment("08:00", this.FORMATO_DA_HORA),
-            variacaoMaxima: moment("00:30", this.FORMATO_DA_HORA),
+            variacaoMaxima: moment("00:10", this.FORMATO_DA_HORA),
             horaDeChegada: moment("07:30", this.FORMATO_DA_HORA),
             minimoDeAlmoco: moment("01:00", this.FORMATO_DA_HORA),
             duracaoDoAlmoco: moment("01:30", this.FORMATO_DA_HORA),
@@ -81,27 +81,27 @@ class Formulario extends Component {
         <Form.Group>
             <Form.Field>
                 <label>Hora de chegada</label>
-                <TimePicker showSecond={false} value={this.state.horaDeChegada} onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
+                <TimePicker allowEmpty={false} showSecond={false} value={this.state.horaDeChegada} onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
             </Form.Field>
             <Form.Field>
                 <label>Carga horária</label>
-                <TimePicker showSecond={false} value={this.state.cargaHoraria} onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
+                <TimePicker allowEmpty={false} showSecond={false} value={this.state.cargaHoraria} onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
             </Form.Field>
             <Form.Field>
                 <label>Duração do almoço</label>
-                <TimePicker showSecond={false} value={this.state.duracaoDoAlmoco}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
+                <TimePicker allowEmpty={false} showSecond={false} value={this.state.duracaoDoAlmoco}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
             </Form.Field>
         </Form.Group>
 
         <Form.Group>
             <Form.Field>
                 <label>Início do período</label>
-                <DatePicker selected={this.state.inicio} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'inicio')} dateFormat={this.FORMATO_DA_DATA} />
+                <DatePicker required selected={this.state.inicio} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'inicio')} dateFormat={this.FORMATO_DA_DATA} />
             </Form.Field>
 
             <Form.Field>
                 <label>Fim do período</label>
-                <DatePicker selected={this.state.fim} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
+                <DatePicker required selected={this.state.fim} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
             </Form.Field>            
         </Form.Group>
 
@@ -114,11 +114,11 @@ class Formulario extends Component {
                 <Form.Group>
                     <Form.Field>
                         <label>Duração mínima do almoço</label>
-                        <TimePicker showSecond={false} value={this.state.minimoDeAlmoco}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "minimoDeAlmoco")} />
+                        <TimePicker allowEmpty={false} showSecond={false} value={this.state.minimoDeAlmoco}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "minimoDeAlmoco")} />
                     </Form.Field>
                     <Form.Field>
                         <label>Adiantamento ou atraso máximo</label>
-                        <TimePicker showSecond={false} value={this.state.variacaoMaxima}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "variacaoMaxima")} />
+                        <TimePicker allowEmpty={false} showSecond={false} value={this.state.variacaoMaxima}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "variacaoMaxima")} />
                     </Form.Field>
                 </Form.Group>
                 <Form.Group>
