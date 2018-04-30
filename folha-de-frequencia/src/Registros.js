@@ -4,8 +4,30 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 
 class Registros extends Component {
+
+  obterLinha(registro) {
+    const dia = moment.utc(registro.dia)
+    const celulaDoDia = <Table.Cell>{dia.format('DD/MM/YY')}</Table.Cell>;
+    if (registro.marcacoes.some(_ => _))
+      return <Table.Row key={registro.dia}>
+      {celulaDoDia}
+      {registro.marcacoes.map(marcacao =>
+      <Table.Cell key={marcacao}>{moment.utc(marcacao).format('HH:mm')}</Table.Cell>
+      )}
+    </Table.Row>
+
+    const diaDaSemana = dia.format('dddd');
+    return <Table.Row>
+      {celulaDoDia}
+      <Table.Cell>{diaDaSemana}</Table.Cell>
+      <Table.Cell>{diaDaSemana}</Table.Cell>
+      <Table.Cell>{diaDaSemana}</Table.Cell>
+      <Table.Cell>{diaDaSemana}</Table.Cell>
+    </Table.Row>
+  }
+
   render() {
-    return <Table id={this.props.id} collapsing striped compact size="small">
+    return <Table id={this.props.id} textAlign="center" striped>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Dia</Table.HeaderCell>
@@ -17,14 +39,7 @@ class Registros extends Component {
         </Table.Header>
         
         <Table.Body>
-          {this.props.registros.map(registro => 
-            <Table.Row key={registro.dia}>
-              <Table.Cell>{moment.utc(registro.dia).format('DD/MM/YY')}</Table.Cell>
-              {registro.marcacoes.map(marcacao => 
-                <Table.Cell key={marcacao}>{moment.utc(marcacao).format('HH:mm')}</Table.Cell>
-              )}
-            </Table.Row>
-          )}
+          {this.props.registros.map(this.obterLinha)}
         </Table.Body>
       </Table>;
   }

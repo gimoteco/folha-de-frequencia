@@ -125,6 +125,7 @@ class Formulario extends Component {
         </Accordion>
                 
         <Button primary type='submit'>Gerar folha de frequência</Button>
+        <Button secondary type="button">Resetar </Button>
     </Form>
   }
 }
