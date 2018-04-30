@@ -15,18 +15,18 @@ class Formulario extends Component {
         this.setState({ activeIndex: newIndex })
     }
     tratarMudancaNoTimePicker = (value, name) => {
-        this.setState({ [name]: value.format('H:m') })
+        this.setState({ [name]: value.format('HH:mm') })
     } 
 
     constructor(props) {
         super(props);
         this.state = {
             preencherFinaisDeSemana: false,
-            cargaHoraria: "8:00",
-            variacaoMaxima: "0:30",
-            horaDeChegada: "7:30",
-            minimoDeAlmoco: "1:00",
-            duracaoDoAlmoco: "1:30",
+            cargaHoraria: "08:00",
+            variacaoMaxima: "00:30",
+            horaDeChegada: "07:30",
+            minimoDeAlmoco: "01:00",
+            duracaoDoAlmoco: "01:30",
             inicio: "29/03/18",
             fim: "30/04/18"
         };
@@ -65,15 +65,15 @@ class Formulario extends Component {
         <Form.Group>
             <Form.Field>
                 <label>Hora de chegada</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.horaDeChegada, "H:m")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
+                <TimePicker showSecond={false} defaultValue={moment(this.state.horaDeChegada, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
             </Form.Field>
             <Form.Field>
                 <label>Carga horária</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.cargaHoraria, "H:m")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
+                <TimePicker showSecond={false} defaultValue={moment(this.state.cargaHoraria, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
             </Form.Field>
             <Form.Field>
                 <label>Duração do almoço</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.duracaoDoAlmoco, "H:m")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
+                <TimePicker showSecond={false} defaultValue={moment(this.state.duracaoDoAlmoco, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
             </Form.Field>
         </Form.Group>
 
@@ -89,11 +89,17 @@ class Formulario extends Component {
             </Accordion.Title>
             <Accordion.Content active={this.state.activeIndex === 0}>
                 <Form.Group>
-                    <Form.Input label="Mínimo de almoço" name="minimoDeAlmoco" value={this.state.minimoDeAlmoco} onChange={this.tratarMudanca} />
-                    <Form.Input label="Variação máxima" name="variacaoMaxima" value={this.state.variacaoMaxima} onChange={this.tratarMudanca} />
+                    <Form.Field>
+                        <label>Duração mínima do almoço</label>
+                        <TimePicker showSecond={false} defaultValue={moment(this.state.minimoDeAlmoco, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "minimoDeAlmoco")} />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Adiantamento ou atraso máximo</label>
+                        <TimePicker showSecond={false} defaultValue={moment(this.state.variacaoMaxima, "HH:mm")}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "variacaoMaxima")} />
+                    </Form.Field>
                 </Form.Group>
                 <Form.Group>
-                <Form.Checkbox label="Preencher os finais de semana" name="preencherFinaisDeSemana" checked={this.state.preencherFinaisDeSemana} onChange={this.tratarMudanca}/>
+                    <Form.Checkbox label="Preencher os finais de semana" name="preencherFinaisDeSemana" checked={this.state.preencherFinaisDeSemana} onChange={this.tratarMudanca}/>
                 </Form.Group>
             </Accordion.Content>
         </Accordion>
