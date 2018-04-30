@@ -1,6 +1,5 @@
 # TO DO
 - Somente aparecer datas futuras para o fim (futuras em relação ao inicio)
-- Feedback que foi copiado
 - Esconde e mostra da tabela (ao limpar)
 - Padronizar spaces e tabs
 - Configurar quantidade de periodos
