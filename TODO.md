@@ -1,5 +1,4 @@
 # TO DO
-- Variar pra mais do almoco
 - Validação de front-end
 - Limpar campos
 - Feedback que foi copiado

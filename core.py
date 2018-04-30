@@ -55,9 +55,10 @@ class GeradorDePonto:
 
         variacao_de_permanencia = self.__obter_variacao_aleatoria_de_tempo()
         variacao_da_chegada = self.__obter_variacao_aleatoria_de_tempo()
-        duracao_do_almoco = timedelta(seconds=random.randint(self.minimo_de_almoco.total_seconds(), self.tempo_de_almoco.total_seconds()))
+        variacao_do_almoco = self.__obter_atraso_aleatorio()
+        duracao_do_almoco = timedelta(seconds=random.randint(self.minimo_de_almoco.total_seconds(), self.tempo_de_almoco.total_seconds() + variacao_do_almoco.total_seconds())) 
         metade_do_expediente = timedelta(seconds=self.carga_horaria.total_seconds() / 2)
-        permanencia_da_manha = metade_do_expediente  + variacao_de_permanencia
+        permanencia_da_manha = metade_do_expediente + variacao_de_permanencia
         horario_de_chegada = datetime.combine(data_da_chegada_oficial, self.horario_de_chegada_oficial) + variacao_da_chegada
         saida_da_manha = horario_de_chegada + permanencia_da_manha
         chegada_da_tarde = saida_da_manha + duracao_do_almoco
@@ -71,3 +72,7 @@ class GeradorDePonto:
     def __obter_variacao_aleatoria_de_tempo(self):
         segundos_da_variacao_maxima = self.variacao_maxima.total_seconds()
         return timedelta(seconds=random.randint(0, segundos_da_variacao_maxima)) * random.choice([-1, 1])
+
+    def __obter_atraso_aleatorio(self):
+        segundos_da_variacao_maxima = self.variacao_maxima.total_seconds()
+        return timedelta(seconds=random.randint(0, segundos_da_variacao_maxima))
