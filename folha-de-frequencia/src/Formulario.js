@@ -101,7 +101,7 @@ class Formulario extends Component {
 
             <Form.Field>
                 <label>Fim do período</label>
-                <DatePicker required selected={this.state.fim} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
+                <DatePicker minDate={this.state.inicio} required selected={this.state.fim} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
             </Form.Field>            
         </Form.Group>
 
