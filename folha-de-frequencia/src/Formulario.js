@@ -21,24 +21,27 @@ class Formulario extends Component {
         this.setState({ activeIndex: newIndex })
     }
     tratarMudancaNoTimePicker = (value, name) => {
-        this.setState({ [name]: value.format(this.FORMATO_DA_HORA) })
+        this.setState({ [name]: value })
     }
     tratarMudancaNoDatePicker = (value, name) => {
-        this.setState({ [name]: value.format(this.FORMATO_DA_DATA) })
+        this.setState({ [name]: value })
     }
 
-    constructor(props) {
-        super(props);
-        this.state = {
+    limparCampos = () => {
+        this.setState({
             preencherFinaisDeSemana: false,
-            cargaHoraria: "08:00",
-            variacaoMaxima: "00:30",
-            horaDeChegada: "07:30",
-            minimoDeAlmoco: "01:00",
-            duracaoDoAlmoco: "01:30",
-            inicio: "29/03/18",
-            fim: "30/04/18"
-        };
+            cargaHoraria: moment("08:00", this.FORMATO_DA_HORA),
+            variacaoMaxima: moment("00:30", this.FORMATO_DA_HORA),
+            horaDeChegada: moment("07:30", this.FORMATO_DA_HORA),
+            minimoDeAlmoco: moment("01:00", this.FORMATO_DA_HORA),
+            duracaoDoAlmoco: moment("01:30", this.FORMATO_DA_HORA),
+            inicio: moment("29/03/18", this.FORMATO_DA_DATA),
+            fim: moment("30/04/18", this.FORMATO_DA_DATA)
+        });
+    }
+
+    componentWillMount() {
+        this.limparCampos()
     }
 
     componentDidMount() {
@@ -54,14 +57,14 @@ class Formulario extends Component {
         } = this.state;
 
         const parametros = {
-            hora_de_chegada: horaDeChegada,
-            carga_horaria: cargaHoraria,
+            hora_de_chegada: horaDeChegada.format(this.FORMATO_DA_HORA),
+            carga_horaria: cargaHoraria.format(this.FORMATO_DA_HORA),
             preencher_fim_de_semana: preencherFinaisDeSemana,
-            minimo_de_almoco: minimoDeAlmoco,
-            variacao_maxima: variacaoMaxima,
-            tempo_de_almoco: duracaoDoAlmoco,
-            inicio: inicio,
-            fim: fim
+            minimo_de_almoco: minimoDeAlmoco.format(this.FORMATO_DA_HORA),
+            variacao_maxima: variacaoMaxima.format(this.FORMATO_DA_HORA),
+            tempo_de_almoco: duracaoDoAlmoco.format(this.FORMATO_DA_HORA),
+            inicio: inicio.format(this.FORMATO_DA_DATA),
+            fim: fim.format(this.FORMATO_DA_DATA)
         }
 
         axios.get('http://127.0.0.1:5000/folhadefrequencia', {params: parametros})
@@ -78,27 +81,27 @@ class Formulario extends Component {
         <Form.Group>
             <Form.Field>
                 <label>Hora de chegada</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.horaDeChegada, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
+                <TimePicker showSecond={false} value={this.state.horaDeChegada} onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "horaDeChegada")} />
             </Form.Field>
             <Form.Field>
                 <label>Carga horária</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.cargaHoraria, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
+                <TimePicker showSecond={false} value={this.state.cargaHoraria} onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "cargaHoraria")} />
             </Form.Field>
             <Form.Field>
                 <label>Duração do almoço</label>
-                <TimePicker showSecond={false} defaultValue={moment(this.state.duracaoDoAlmoco, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
+                <TimePicker showSecond={false} value={this.state.duracaoDoAlmoco}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "duracaoDoAlmoco")} />
             </Form.Field>
         </Form.Group>
 
         <Form.Group>
             <Form.Field>
                 <label>Início do período</label>
-                <DatePicker selected={moment(this.state.inicio, this.FORMATO_DA_DATA)} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'inicio')} dateFormat={this.FORMATO_DA_DATA} />
+                <DatePicker selected={this.state.inicio} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'inicio')} dateFormat={this.FORMATO_DA_DATA} />
             </Form.Field>
 
             <Form.Field>
                 <label>Fim do período</label>
-                <DatePicker selected={moment(this.state.fim, this.FORMATO_DA_DATA)} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
+                <DatePicker selected={this.state.fim} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
             </Form.Field>            
         </Form.Group>
 
@@ -111,11 +114,11 @@ class Formulario extends Component {
                 <Form.Group>
                     <Form.Field>
                         <label>Duração mínima do almoço</label>
-                        <TimePicker showSecond={false} defaultValue={moment(this.state.minimoDeAlmoco, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "minimoDeAlmoco")} />
+                        <TimePicker showSecond={false} value={this.state.minimoDeAlmoco}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "minimoDeAlmoco")} />
                     </Form.Field>
                     <Form.Field>
                         <label>Adiantamento ou atraso máximo</label>
-                        <TimePicker showSecond={false} defaultValue={moment(this.state.variacaoMaxima, this.FORMATO_DA_HORA)}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "variacaoMaxima")} />
+                        <TimePicker showSecond={false} value={this.state.variacaoMaxima}  onChange={(valor) => this.tratarMudancaNoTimePicker(valor, "variacaoMaxima")} />
                     </Form.Field>
                 </Form.Group>
                 <Form.Group>
@@ -125,7 +128,7 @@ class Formulario extends Component {
         </Accordion>
                 
         <Button primary type='submit'>Gerar folha de frequência</Button>
-        <Button secondary type="button">Resetar </Button>
+        <Button secondary type="button" onClick={this.limparCampos}>Resetar</Button>
     </Form>
   }
 }
