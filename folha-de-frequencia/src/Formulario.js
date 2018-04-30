@@ -49,7 +49,7 @@ class Formulario extends Component {
     }
 
     enviar() {
-        const { 
+        const {
             cargaHoraria, variacaoMaxima,
             minimoDeAlmoco, duracaoDoAlmoco,
             horaDeChegada, inicio, fim,
@@ -73,7 +73,7 @@ class Formulario extends Component {
             })
             .catch(function (error) {
                 console.log(error);
-            });        
+            });
     }
 
   render() {
@@ -102,7 +102,7 @@ class Formulario extends Component {
             <Form.Field>
                 <label>Fim do período</label>
                 <DatePicker minDate={this.state.inicio} required selected={this.state.fim} onChange={valor => this.tratarMudancaNoDatePicker(valor, 'fim')} dateFormat={this.FORMATO_DA_DATA} />
-            </Form.Field>            
+            </Form.Field>
         </Form.Group>
 
         <Accordion>
@@ -126,7 +126,7 @@ class Formulario extends Component {
                 </Form.Group>
             </Accordion.Content>
         </Accordion>
-                
+
         <Button primary type='submit'>Gerar folha de frequência</Button>
         <Button secondary type="button" onClick={this.limparCampos}>Resetar</Button>
     </Form>

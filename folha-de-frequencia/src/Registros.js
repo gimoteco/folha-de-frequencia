@@ -37,7 +37,7 @@ class Registros extends Component {
             <Table.HeaderCell>Saída</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
-        
+
         <Table.Body>
           {this.props.registros.map(this.obterLinha)}
         </Table.Body>

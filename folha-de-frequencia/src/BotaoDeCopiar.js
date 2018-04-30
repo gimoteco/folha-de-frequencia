@@ -48,7 +48,7 @@ class BotaoDeCopiar extends Component {
         setTimeout(() => {
           this.exibirBotaoParaCopiar();
         }, this.TEMPO_DA_MENSAGEM_DE_FEEDBACK);
-      }, this.TEMPO_DO_LOADING)      
+      }, this.TEMPO_DO_LOADING)
     });
   }
 
