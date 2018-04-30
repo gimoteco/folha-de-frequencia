@@ -53,21 +53,44 @@ class GeradorDePonto:
         if registro.eh_fim_de_semana and not self.preencher_fim_de_semana:
             return registro
 
+        metade_do_expediente = timedelta(seconds=self.carga_horaria.total_seconds() / 2)
+        duracao_do_almoco = self.__obter_duracao_do_almoco()
+
+        chegada_da_manha = self.__obter_chegada(data_da_chegada_oficial)
+        registro.marcar(chegada_da_manha)
+
+        saida_da_manha, variacao_de_permanencia_da_manha = self.__obter_saida_da_manha(metade_do_expediente, chegada_da_manha)
+        registro.marcar(saida_da_manha)
+
+        chegada_da_tarde = self.__obter_chegada_da_tarde(saida_da_manha, duracao_do_almoco)
+        registro.marcar(chegada_da_tarde)
+
+        saida_da_tarde = self.__obter_saida_da_tarde(chegada_da_tarde, variacao_de_permanencia_da_manha, metade_do_expediente)
+        registro.marcar(saida_da_tarde)
+
+        return registro
+
+    def __obter_saida_da_tarde(self, ultima_chegada, variacao_de_permanencia, metade_do_expediente):
+        return ultima_chegada - variacao_de_permanencia + metade_do_expediente
+    
+    def __obter_chegada_da_tarde(self, ultima_saida, duracao_do_almoco):
+        return ultima_saida + duracao_do_almoco
+
+    def __obter_saida_da_manha(self, metade_do_expediente, ultima_chegada):
         variacao_de_permanencia = self.__obter_variacao_aleatoria_de_tempo()
+        permanencia_da_manha = metade_do_expediente + variacao_de_permanencia
+        saida_da_manha = ultima_chegada + permanencia_da_manha
+        return saida_da_manha, variacao_de_permanencia
+
+    def __obter_chegada(self, dia):
         variacao_da_chegada = self.__obter_variacao_aleatoria_de_tempo()
+        horario_de_chegada = datetime.combine(dia, self.horario_de_chegada_oficial) + variacao_da_chegada
+        return horario_de_chegada
+
+    def __obter_duracao_do_almoco(self):
         variacao_do_almoco = self.__obter_atraso_aleatorio()
         duracao_do_almoco = timedelta(seconds=random.randint(self.minimo_de_almoco.total_seconds(), self.tempo_de_almoco.total_seconds() + variacao_do_almoco.total_seconds())) 
-        metade_do_expediente = timedelta(seconds=self.carga_horaria.total_seconds() / 2)
-        permanencia_da_manha = metade_do_expediente + variacao_de_permanencia
-        horario_de_chegada = datetime.combine(data_da_chegada_oficial, self.horario_de_chegada_oficial) + variacao_da_chegada
-        saida_da_manha = horario_de_chegada + permanencia_da_manha
-        chegada_da_tarde = saida_da_manha + duracao_do_almoco
-        saida_da_tarde = chegada_da_tarde - variacao_de_permanencia + metade_do_expediente
-        registro.marcar(horario_de_chegada)
-        registro.marcar(saida_da_manha)
-        registro.marcar(chegada_da_tarde)
-        registro.marcar(saida_da_tarde)
-        return registro
+        return duracao_do_almoco
 
     def __obter_variacao_aleatoria_de_tempo(self):
         segundos_da_variacao_maxima = self.variacao_maxima.total_seconds()
