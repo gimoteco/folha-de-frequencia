@@ -3,6 +3,7 @@ import {Segment, Container, Header} from 'semantic-ui-react';
 import BotaoDeCopiar from './BotaoDeCopiar'
 import Registros from './Registros';
 import Formulario from './Formulario';
+import './App.css';
 
 class App extends Component {
   ID_DA_TABELA_DE_REGISTROS = 'registros';

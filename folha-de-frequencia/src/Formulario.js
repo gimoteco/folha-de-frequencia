@@ -67,7 +67,7 @@ class Formulario extends Component {
             fim: fim.format(this.FORMATO_DA_DATA)
         }
 
-        axios.get('http://127.0.0.1:5000/folhadefrequencia', {params: parametros})
+        axios.get(`${process.env.REACT_APP_ENDERECO_DA_API}/folhadefrequencia`, {params: parametros})
             .then(resposta => {
                 this.props.registrosCarregados(resposta.data);
             })
