@@ -35,3 +35,6 @@ def obter_ponto():
     registros = gerador.obter_anotacoes_por_periodo(inicio, fim)
     registros = map(mapear_registro, registros)
     return jsonify(list(registros))
+
+if __name__ == '__main__':
+    app.run()
