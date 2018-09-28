@@ -1,11 +1,11 @@
 from prettytable import PrettyTable
 from datetime import datetime, time
 from datetime import timedelta
-from core import GeradorDePonto
-from helpers import formatar_hora
-from helpers import converter_hora_em_texto_para_timedelta
-from helpers import converter_hora_em_texto_para_time
-from helpers import converter_data
+from folha_de_frequencia import GeradorDePonto
+from folha_de_frequencia.helpers import formatar_hora
+from folha_de_frequencia.helpers import converter_hora_em_texto_para_timedelta
+from folha_de_frequencia.helpers import converter_hora_em_texto_para_time
+from folha_de_frequencia.helpers import converter_data
 from io import StringIO
 import random
 import argparse

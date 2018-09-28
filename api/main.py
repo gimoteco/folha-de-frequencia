@@ -1,9 +1,9 @@
 from flask import Flask, render_template, jsonify, request
-from core import GeradorDePonto
+from folha_de_frequencia import GeradorDePonto
 from datetime import time, datetime, timedelta
-from helpers import converter_hora_em_texto_para_timedelta
-from helpers import converter_hora_em_texto_para_time
-from helpers import converter_data
+from folha_de_frequencia.helpers import converter_hora_em_texto_para_timedelta
+from folha_de_frequencia.helpers import converter_hora_em_texto_para_time
+from folha_de_frequencia.helpers import converter_data
 from flask_cors import CORS
 
 app = Flask(__name__)

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./api
+    volumes:
+      - ./api:/code
+    ports:
+      - "5000:5000"
+    command:
+      ['flask', 'run', '--host=0.0.0.0']
+    environment:
+      - FLASK_ENV=development
+
+  site:
+    build:
+      context: ./frontend/
+    volumes:
+      - ./frontend:/code
+      - /code/node_modules
+    command: 
+      ["npm", "start"]
+    ports:
+      - "3000:3000"
+    links:
+      - "api"
+    env_file:
+      - ./frontend/.env.development

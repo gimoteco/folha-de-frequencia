@@ -1,4 +1,3 @@
 prettytable==0.7.2
 pyperclip==1.6.0
-Flask==1.0
-Flask-Cors==3.0.4
+folha_de_frequencia==0.0.1
