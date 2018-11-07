@@ -35,8 +35,8 @@ class Formulario extends Component {
             horaDeChegada: moment("07:30", this.FORMATO_DA_HORA),
             minimoDeAlmoco: moment("01:00", this.FORMATO_DA_HORA),
             duracaoDoAlmoco: moment("01:30", this.FORMATO_DA_HORA),
-            inicio: moment("29/03/18", this.FORMATO_DA_DATA),
-            fim: moment("30/04/18", this.FORMATO_DA_DATA)
+            inicio: moment().subtract(1, 'month'),
+            fim: moment()
         });
     }
 
