@@ -21,7 +21,7 @@
     "surge": "surge"
   },
   "devDependencies": {
-    "surge": "^0.20.1"
+    "surge": "^0.20.5"
   },
   "browserslist": [
     ">0.2%",
